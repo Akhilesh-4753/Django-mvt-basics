@@ -23,7 +23,7 @@ def About(request):
     return render(request,"tasks/about.html",{"course": course})
 
 def Contact(request):
-    return HttpResponse("This is contact page")
+    return render(request,"tasks/contact.html")
 
 def Greetings(request):
     name = request.GET.get("name","")
