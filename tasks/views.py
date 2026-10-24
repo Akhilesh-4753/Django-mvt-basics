@@ -23,7 +23,22 @@ def About(request):
     return render(request,"tasks/about.html",{"course": course})
 
 def Contact(request):
-    return render(request,"tasks/contact.html")
+    name = ''
+    phone = ''
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '')
+        phone = request.POST.get('phone', '')
+
+        print("Name:", name)
+        print("Phone:", phone)
+
+    context = {
+        'name': name,
+        'phone': phone
+    }
+
+    return render(request, "tasks/contact.html", context)
 
 def Greetings(request):
     name = request.GET.get("name","")
