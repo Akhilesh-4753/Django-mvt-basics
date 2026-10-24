@@ -1,20 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home page</title>
-    <link rel="stylesheet" href="home.css">
-</head>
+{% block title %}My Tasks{% endblock %}
 
-<body>
+{% block content %} 
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <section class="col-12 col-md-8 col-lg-6">
+            <h1 class="mb-4">My tasks</h1>
 
-    <h1>Hello {{name}}</h1>
-    {% for task in tasks %}
-    <h4>{{task}}</h4>
-    {% endfor %}
+            {% if is_student %}
+            <div class="alert alert-info" role="status">Keep practicing</div>
+            {% endif %}
 
-</body>
-
-</html>
+            {% if tasks %}
+            <ul class="list-group">
+                {% for task in tasks %}
+                <li class="list-group-item mt-3">{{ task }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-body-secondary">No tasks yet.</p>
+            {% endif %}
+        </section>
+    </div>
+</main>
+{% endblock %}

@@ -2,16 +2,25 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 def Home(requests):
+
+    tasks = [
+        "Learn Django URLs",
+        "Understand views",
+        "Build a template",
+    ]
+
     context = {
-        "name":"Akhilesh",
-        "course":"Web development",
-        "hours":30,
-        "tasks": ["Learn Django", "Build a website", "Practice CSS"],
+        "tasks": tasks,
+        "is_student": True,
     }
+
     return render(requests,"tasks/home.html",context)
 
 def About(request):
-    return HttpResponse("this is my about page")
+
+    course = ["developer","designer","prompt engineer"]
+
+    return render(request,"tasks/about.html",{"course": course})
 
 def Contact(request):
     return HttpResponse("This is contact page")

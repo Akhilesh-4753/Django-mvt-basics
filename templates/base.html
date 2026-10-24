@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %} Task Manager {% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href=""> Task Manager</a>
+            <a class="nav-link text-white" href="/"> Home</a>
+            <a class="nav-link text-white" href="/about"> About</a>
+        </div>
+    </nav>
+    <main class="container py-5" style="height: 500px;">
+        {% block content %}
+        
+        {% endblock %}
+    </main>
+
+    <footer class="bg-dark" style="height: 150px;">
+        <h4 class="text-white p-4">This is footer</h4>
+    </footer>
+
+</body>
+
+</html>
