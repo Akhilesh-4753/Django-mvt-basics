@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from .models import Task
 
 def Home(requests):
 
@@ -48,3 +49,42 @@ def Profile(request):
     name = request.GET.get("name","")
     occupation = request.GET.get("occupation","")
     return HttpResponse(f"name is {name} and occupation is {occupation}")
+
+def task_list(request):
+    errors = []
+    title = ""
+    description = ""
+
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip()
+
+        # Server-side validation
+
+        if not title:
+            errors.append("Title is required.")
+        elif not description:
+            errors.append("Description is required")
+        elif len(title) > 200:
+            errors.append("Title cannot exceed 200 characters.")
+
+        # Save only when there are no validation errors
+        if not errors:
+            Task.objects.create(
+                title=title,
+                description=description
+            )
+
+            return redirect("task_list")
+
+    context = {
+        "errors": errors,
+        "title": title,
+        "description": description,
+    }
+
+    return render(
+        request,
+        "tasks/create_task.html",
+        context
+    )

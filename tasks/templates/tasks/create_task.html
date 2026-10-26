@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Create Task {% endblock %}
+
+{% block content %}
+
+<div class="task-container">
+
+    <h1>Create a task</h1>
+
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" name="title" id="title" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Description</label>
+            <textarea type="text" rows="5" name="description" id="description" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label for="priority" class="form-label fw-semibold">Priority</label>
+            <select name="priority" id="priority" class="form-select form-select-lg shadow-sm">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+            </select>
+            <div class="form-text">Choose the task’s urgency.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Task</button>
+
+    </form>
+
+</div>
+
+{% if errors %}
+    <div class="alert alert-danger task-alert" role="alert">
+        {% for error in errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock %}
