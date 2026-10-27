@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .models import Task
+from .models import Task,Contact
 
 def Home(requests):
 
@@ -24,17 +24,37 @@ def About(request):
     return render(request,"tasks/about.html",{"course": course})
 
 def Contact(request):
+    errors = []
     name = ''
     phone = ''
 
-    if request.method == 'POST':
-        name = request.POST.get('name', '')
-        phone = request.POST.get('phone', '')
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        phone = request.POST.get("phone", "").strip()
 
-        print("Name:", name)
-        print("Phone:", phone)
+        # Server-side validation
+
+        if not name:
+            errors.append("Name is required.")
+        elif not phone:
+            errors.append("Phone number is required")
+        elif len(name) > 15:
+            errors.append("name cannot exceed 15 characters.")
+        elif len(phone) > 10:
+            errors.append("name cannot exceed 10 characters.")
+
+        # Save only when there are no validation errors
+
+        if not errors:
+            Contact.objects.create(
+                name=name,
+                phone=phone
+            )
+
+            return redirect("contact")
 
     context = {
+        'errors': errors,
         'name': name,
         'phone': phone
     }

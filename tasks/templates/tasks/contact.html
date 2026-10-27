@@ -21,4 +21,12 @@
     </div>
 </form>
 
+{% if errors %}
+    <div class="alert alert-danger task-alert" role="alert">
+        {% for error in errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
 {% endblock %}
