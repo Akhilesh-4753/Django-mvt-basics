@@ -1,47 +1,44 @@
 {% extends "base.html" %}
-{% block title %}Create Task {% endblock %}
+{% block title %}Create Task{% endblock %}
 
 {% block content %}
 
 <div class="task-container">
 
-    <h1 class="text-center">Create a task</h1>
+    <h1 class="text-center">Create a Task</h1>
 
     <form action="" method="post">
         {% csrf_token %}
 
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" name="title" id="title" class="form-control">
+            <input type="text" name="title" id="title" class="form-control" maxlength="15" value="{{ form.title.value|default_if_none:'' }}" required>
+            {% for error in form.title.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
-            <label for="title" class="form-label">Description</label>
-            <textarea type="text" rows="4" name="description" id="description" class="form-control"></textarea>
+            <label for="description" class="form-label">Description</label>
+            <textarea rows="4" name="description" id="description" class="form-control" maxlength="25" required>{{ form.description.value|default_if_none:'' }}</textarea>
+            {% for error in form.description.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-4">
             <label for="priority" class="form-label fw-semibold">Priority</label>
             <select name="priority" id="priority" class="form-select form-select-lg shadow-sm">
-                <option value="low">Low</option>
-                <option value="medium" selected>Medium</option>
-                <option value="high">High</option>
+                <option value="low" {% if form.priority.value == 'low' %}selected{% endif %}>Low</option>
+                <option value="medium" {% if form.priority.value == 'medium' or not form.priority.value %}selected{% endif %}>Medium</option>
+                <option value="high" {% if form.priority.value == 'high' %}selected{% endif %}>High</option>
             </select>
-            <div class="form-text">Choose the task’s urgency.</div>
+            <div class="form-text">Choose the task's urgency.</div>
         </div>
 
         <button type="submit" class="btn btn-primary">Save Task</button>
-
     </form>
 
 </div>
-
-{% if errors %}
-    <div class="alert alert-danger task-alert" role="alert">
-        {% for error in errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
-    </div>
-{% endif %}
 
 {% endblock %}

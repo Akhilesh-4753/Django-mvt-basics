@@ -1,6 +1,9 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
+from django.contrib import messages
+
 from .models import Task,Contact
+from .forms import TaskForm
 
 def Home(requests):
 
@@ -23,7 +26,7 @@ def About(request):
 
     return render(request,"tasks/about.html",{"course": course})
 
-def Contact(request):
+def Contacts(request):
     errors = []
     name = ''
     phone = ''
@@ -41,7 +44,7 @@ def Contact(request):
         elif len(name) > 15:
             errors.append("name cannot exceed 15 characters.")
         elif len(phone) > 10:
-            errors.append("name cannot exceed 10 characters.")
+            errors.append("number cannot exceed 10 characters.")
 
         # Save only when there are no validation errors
 
@@ -51,7 +54,7 @@ def Contact(request):
                 phone=phone
             )
 
-            return redirect("contact")
+            return redirect("Contactss")
 
     context = {
         'errors': errors,
@@ -71,40 +74,73 @@ def Profile(request):
     return HttpResponse(f"name is {name} and occupation is {occupation}")
 
 def task_list(request):
-    errors = []
-    title = ""
-    description = ""
-
+    
     if request.method == "POST":
-        title = request.POST.get("title", "").strip()
-        description = request.POST.get("description", "").strip()
+        
+        form = TaskForm(request.POST)
 
-        # Server-side validation
-
-        if not title:
-            errors.append("Title is required.")
-        elif not description:
-            errors.append("Description is required")
-        elif len(title) > 200:
-            errors.append("Title cannot exceed 200 characters.")
-
-        # Save only when there are no validation errors
-        if not errors:
-            Task.objects.create(
-                title=title,
-                description=description
-            )
-
+        if form.is_valid():
+            form.save()
             return redirect("task_list")
+    else:
+        form = TaskForm()
 
     context = {
-        "errors": errors,
-        "title": title,
-        "description": description,
+        "form": form,
     }
 
-    return render(
-        request,
-        "tasks/create_task.html",
-        context
-    )
+    return render(request, "tasks/create_task.html", context)
+
+def show_tasks(request):
+    
+    tasks = Task.objects.all().order_by('-created_at')
+
+    context = {
+    'tasks': tasks,
+    }
+
+    return render(request, 'tasks/showtask.html', context)
+
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Task saved successfully!")
+            return redirect('show_tasks')
+
+    else:
+        form = TaskForm(instance=task)
+
+    context = {
+        'form': form,
+        'task': task,
+    }
+
+    return render(request, 'tasks/edit_task.html', context)
+
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+
+    if request.method == "POST":
+        task.delete()
+        messages.success(request, "Task deleted successfully!")
+
+    return redirect('show_tasks')
+
+def toggle_completed(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+
+    if request.method == "POST":
+        task.completed = not task.completed
+        task.save(update_fields=['completed'])
+
+        if task.completed:
+            messages.success(request, "Task marked as completed!")
+        else:
+            messages.success(request, "Task marked as pending!")
+
+    return redirect('show_tasks')

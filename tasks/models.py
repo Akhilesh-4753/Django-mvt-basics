@@ -8,10 +8,14 @@ class Task(models.Model):
         ('high', 'High'),
     ]
     
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=20)
     description = models.TextField(blank=True)
     completed = models.BooleanField(default=False)
-    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium')
+    priority = models.CharField(
+        max_length=10,
+        choices=PRIORITY_CHOICES,
+        default='medium'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
